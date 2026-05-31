@@ -31,11 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   try {
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const docRef = db.collection("payments").doc("main");
+    console.log("Firebase инициализирован");
   } catch (e) {
     console.error("Ошибка инициализации Firebase:", e);
-    alert("Ошибка подключения к базе данных. Работает в офлайн‑режиме.");
+    alert("Работает в офлайн‑режиме (Firebase недоступен)");
   }
 
   // LOGIN
@@ -125,7 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const percent = Math.round((paid / TOTAL) * 100);
 
     balanceEl.innerText = remaining.toLocaleString("ru-RU") + " ₽";
-
     progressFill.style.width = percent + "%";
     progressText.innerText = `Выплачено: ${percent}% (${paid.toLocaleString("ru-RU")} ₽)`;
   }
@@ -147,4 +145,43 @@ document.addEventListener("DOMContentLoaded", () => {
     chart = new Chart(ctx, {
       type: "line",
       data: {
-        labels
+        labels,
+        datasets: [{
+          label: "Выплаты",
+          data,
+          borderColor: "#2563eb",
+          backgroundColor: "rgba(37, 99, 235, 0.1)",
+          borderWidth: 2,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  // Excel export
+  exportBtn.addEventListener("click", () => {
+    const data = [["Месяц", "Сумма", "Оплачено"]];
+
+    for (let i = 0; i < 120; i++) {
+      data.push([
+        i + 1,
+        payments[i]?.amount || 0,
+        payments[i]?.paid ? "Да" : "Нет"
+      ]);
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Payments");
+    XLSX.writeFile(wb, "payments.xlsx");
+  });
+});
