@@ -9,16 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginScreen = document.getElementById("loginScreen");
   const app = document.getElementById("app");
 
-  const balanceEl = document.getElementById("balance");
   const monthsContainer = document.getElementById("months");
+  const balanceEl = document.getElementById("balance");
+  const progressFill = document.getElementById("progressFill");
+  const progressText = document.getElementById("progressText");
+  const exportBtn = document.getElementById("exportBtn");
 
   const TOTAL = 2400000;
 
   let payments = {};
-
   let chart;
 
-  // 🔥 FIREBASE
+  // Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyC-3krnSTHSeDcEPjMrI_fklf_BylTFAGA",
     authDomain: "apartment-payment.firebaseapp.com",
@@ -32,34 +34,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const db = firebase.firestore();
   const docRef = db.collection("payments").doc("main");
 
-  // 🔐 LOGIN
+  // LOGIN
   loginBtn.addEventListener("click", () => {
-
     if (password.value === CORRECT_PASSWORD) {
       loginScreen.style.display = "none";
       app.style.display = "block";
-
-      startRealtime();
+      start();
     } else {
       error.innerText = "Неверный пароль";
     }
-
   });
 
-  // 💰 БАЛАНС
-  function updateBalance() {
-    let paid = 0;
-
-    Object.values(payments).forEach(p => {
-      paid += Number(p.amount || 0);
+  function start() {
+    docRef.onSnapshot((doc) => {
+      payments = doc.exists ? doc.data().payments : {};
+      render();
+      updateBalance();
+      updateChart();
     });
-
-    const balance = TOTAL - paid;
-
-    balanceEl.innerText = balance.toLocaleString("ru-RU") + " ₽";
   }
 
-  // 📊 РЕНДЕР МЕСЯЦЕВ
   function render() {
     monthsContainer.innerHTML = "";
 
@@ -75,10 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
       div.innerHTML = `
         <div class="month-title">Месяц ${i + 1}</div>
 
-        <input type="number"
-          class="amountInput"
-          value="${payments[i].amount}"
-          placeholder="Сумма">
+        <input type="number" value="${payments[i].amount}" placeholder="Сумма" class="amountInput">
 
         <label class="checkbox-row">
           <input type="checkbox" ${payments[i].paid ? "checked" : ""}>
@@ -104,15 +95,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
       monthsContainer.appendChild(div);
     }
-
-    updateBalance();
   }
 
-  // 📊 ГРАФИК
+  function updateBalance() {
+    let paid = 0;
+
+    Object.values(payments).forEach(p => {
+      paid += Number(p.amount || 0);
+    });
+
+    const remaining = TOTAL - paid;
+    const percent = Math.round((paid / TOTAL) * 100);
+
+    balanceEl.innerText = remaining.toLocaleString("ru-RU") + " ₽";
+
+    progressFill.style.width = percent + "%";
+    progressText.innerText = Выплачено: ${percent}% (${paid.toLocaleString("ru-RU")} ₽);
+  }
+
   function updateChart() {
 
-    const canvas = document.getElementById("paymentChart");
-    if (!canvas) return;
+    const ctx = document.getElementById("paymentChart");
+    if (!ctx) return;
 
     const labels = [];
     const data = [];
@@ -124,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (chart) chart.destroy();
 
-    chart = new Chart(canvas, {
+    chart = new Chart(ctx, {
       type: "line",
       data: {
         labels,
@@ -137,23 +141,29 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       options: {
         responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
+        maintainAspectRatio: false
       }
     });
   }
 
-  // 🔥 FIREBASE LISTENER
-  function startRealtime() {
-    docRef.onSnapshot((doc) => {
-      payments = doc.exists ? doc.data().payments : {};
+  // Excel export
+  exportBtn.addEventListener("click", () => {
 
-      render();
-      updateChart();
-    });
-  }
+    const data = [["Месяц", "Сумма", "Оплачено"]];
+
+    for (let i = 0; i < 120; i++) {
+      data.push([
+        i + 1,
+        payments[i]?.amount || 0,
+        payments[i]?.paid ? "Да" : "Нет"
+      ]);
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Payments");
+
+    XLSX.writeFile(wb, "payments.xlsx");
+  });
 
 });
