@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
   const CORRECT_PASSWORD = "1234";
 
   const loginBtn = document.getElementById("loginBtn");
@@ -30,9 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
     appId: "1:335389444987:web:4e5e38ace539de7fd60bde"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const docRef = db.collection("payments").doc("main");
+  try {
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const docRef = db.collection("payments").doc("main");
+  } catch (e) {
+    console.error("Ошибка инициализации Firebase:", e);
+    alert("Ошибка подключения к базе данных. Работает в офлайн‑режиме.");
+  }
 
   // LOGIN
   loginBtn.addEventListener("click", () => {
@@ -46,19 +50,28 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function start() {
-    docRef.onSnapshot((doc) => {
-      payments = doc.exists ? doc.data().payments : {};
+    try {
+      const db = firebase.firestore();
+      const docRef = db.collection("payments").doc("main");
+
+      docRef.onSnapshot((doc) => {
+        payments = doc.exists ? doc.data().payments : {};
+        render();
+        updateBalance();
+        updateChart();
+      });
+    } catch (e) {
+      console.error("Ошибка загрузки данных:", e);
       render();
       updateBalance();
       updateChart();
-    });
+    }
   }
 
   function render() {
     monthsContainer.innerHTML = "";
 
     for (let i = 0; i < 120; i++) {
-
       if (!payments[i]) {
         payments[i] = { amount: "", paid: false };
       }
@@ -68,9 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       div.innerHTML = `
         <div class="month-title">Месяц ${i + 1}</div>
-
         <input type="number" value="${payments[i].amount}" placeholder="Сумма" class="amountInput">
-
         <label class="checkbox-row">
           <input type="checkbox" ${payments[i].paid ? "checked" : ""}>
           оплачено
@@ -84,7 +95,13 @@ document.addEventListener("DOMContentLoaded", () => {
         payments[i].amount = input.value;
         payments[i].paid = checkbox.checked;
 
-        docRef.set({ payments });
+        try {
+          const db = firebase.firestore();
+          const docRef = db.collection("payments").doc("main");
+          docRef.set({ payments });
+        } catch (e) {
+          console.error("Ошибка сохранения в Firebase:", e);
+        }
 
         updateBalance();
         updateChart();
@@ -110,11 +127,10 @@ document.addEventListener("DOMContentLoaded", () => {
     balanceEl.innerText = remaining.toLocaleString("ru-RU") + " ₽";
 
     progressFill.style.width = percent + "%";
-    progressText.innerText = Выплачено: ${percent}% (${paid.toLocaleString("ru-RU")} ₽);
+    progressText.innerText = `Выплачено: ${percent}% (${paid.toLocaleString("ru-RU")} ₽)`;
   }
 
   function updateChart() {
-
     const ctx = document.getElementById("paymentChart");
     if (!ctx) return;
 
@@ -131,39 +147,4 @@ document.addEventListener("DOMContentLoaded", () => {
     chart = new Chart(ctx, {
       type: "line",
       data: {
-        labels,
-        datasets: [{
-          label: "Выплаты",
-          data,
-          borderWidth: 2,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  }
-
-  // Excel export
-  exportBtn.addEventListener("click", () => {
-
-    const data = [["Месяц", "Сумма", "Оплачено"]];
-
-    for (let i = 0; i < 120; i++) {
-      data.push([
-        i + 1,
-        payments[i]?.amount || 0,
-        payments[i]?.paid ? "Да" : "Нет"
-      ]);
-    }
-
-    const ws = XLSX.utils.aoa_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Payments");
-
-    XLSX.writeFile(wb, "payments.xlsx");
-  });
-
-});
+        labels
