@@ -1,30 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("JS ЗАПУСТИЛСЯ");
 
-  const btn = document.getElementById("loginBtn");
-  const input = document.getElementById("password");
+  const loginBtn = document.getElementById("loginBtn");
+  const password = document.getElementById("password");
   const error = document.getElementById("error");
-  const login = document.getElementById("loginScreen");
+
+  const loginScreen = document.getElementById("loginScreen");
   const app = document.getElementById("app");
 
-  const CORRECT_PASSWORD = "1234";
+  loginBtn.addEventListener("click", () => {
+    console.log("КЛИК");
 
-  btn.addEventListener("click", () => {
-
-    const value = input.value;
-
-    if (value === CORRECT_PASSWORD) {
-
-      login.classList.add("hidden");
-      app.classList.remove("hidden");
-
-      console.log("LOGIN OK");
-
+    if (password.value === "1234") {
+      loginScreen.style.display = "none";
+      app.style.display = "block";
     } else {
-
       error.innerText = "Неверный пароль";
-
     }
-
   });
-
 });
