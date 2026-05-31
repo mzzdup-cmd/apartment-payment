@@ -15,75 +15,61 @@
 <body>
   <!-- Вход -->
   <div id="loginScreen" class="login">
-<h2>🏠 Оплата квартиры</h2>
-
-<input
-  type="password"
-  id="password"
-  placeholder="Введите пароль">
-
-<button id="loginBtn">
-  Войти
-</button>
-
-<p id="error"></p>
+    <h2>🏠 Оплата квартиры</h2>
+    <input
+      type="password"
+      id="password"
+      placeholder="Введите пароль">
+    <button id="loginBtn">
+      Войти
+    </button>
+    <p id="error"></p>
   </div>
+
   <!-- Основное приложение -->
   <div id="app">
-<div class="header">
-
-  <h1>🏠 Оплата квартиры</h1>
-
-  <div class="balance-card">
-
-    <div class="small-title">
-      Общая сумма к выплате
-    </div>
-
-    <div class="total-value">
-      2 400 000 ₽
-    </div>
-
-    <div class="small-title">
-      Остаток
-    </div>
-
-    <div id="balance" class="balance-value">
-      2 400 000 ₽
-    </div>
-
-    <div class="progress">
-      <div
-        id="progressFill"
-        class="progress-fill">
+    <div class="header">
+      <h1>🏠 Оплата квартиры</h1>
+      <div class="balance-card">
+        <div class="small-title">
+          Общая сумма к выплате
+        </div>
+        <div class="total-value">
+          2 400 000 ₽
+        </div>
+        <div class="small-title">
+          Остаток
+        </div>
+        <div id="balance" class="balance-value">
+          2 400 000 ₽
+        </div>
+        <div class="progress">
+          <div
+            id="progressFill"
+            class="progress-fill">
+          </div>
+        </div>
+        <div id="progressText">
+          Выплачено: 0%
+        </div>
       </div>
+
+      <!-- График -->
+      <div class="chart-card">
+        <h3>📊 График выплат</h3>
+        <canvas id="paymentChart"></canvas>
+      </div>
+
+      <!-- Excel -->
+      <button id="exportBtn" class="export-btn">
+        📥 Скачать Excel
+      </button>
     </div>
 
-    <div id="progressText">
-      Выплачено: 0%
-    </div>
-
+    <!-- Месяцы -->
+    <div id="months"></div>
   </div>
 
-  <!-- График -->
-  <div class="chart-card">
-
-    <h3>📊 График выплат</h3>
-
-    <canvas id="paymentChart"></canvas>
-
-  </div>
-
-  <!-- Excel -->
-  <button id="exportBtn" class="export-btn">
-    📥 Скачать Excel
-  </button>
-
-</div>
-
-<!-- Месяцы -->
-<div id="months"></div>
-  </div>
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
