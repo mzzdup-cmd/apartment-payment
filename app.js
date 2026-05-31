@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const CORRECT_PASSWORD = "1234";
 
   const loginBtn = document.getElementById("loginBtn");
-  const password = document.getElementById("password");
+  const passwordInput = document.getElementById("password");
   const error = document.getElementById("error");
 
   const loginScreen = document.getElementById("loginScreen");
@@ -19,27 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let payments = {};
   let chart;
 
-  // Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyC-3krnSTHSeDcEPjMrI_fklf_BylTFAGA",
-    authDomain: "apartment-payment.firebaseapp.com",
-    projectId: "apartment-payment",
-    storageBucket: "apartment-payment.firebasestorage.app",
-    messagingSenderId: "335389444987",
-    appId: "1:335389444987:web:4e5e38ace539de7fd60bde"
-  };
-
-  try {
-    firebase.initializeApp(firebaseConfig);
-    console.log("Firebase инициализирован");
-  } catch (e) {
-    console.error("Ошибка инициализации Firebase:", e);
-    alert("Работает в офлайн‑режиме (Firebase недоступен)");
-  }
-
   // LOGIN
   loginBtn.addEventListener("click", () => {
-    if (password.value === CORRECT_PASSWORD) {
+    if (passwordInput.value === CORRECT_PASSWORD) {
       loginScreen.style.display = "none";
       app.style.display = "block";
       start();
@@ -49,22 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function start() {
-    try {
-      const db = firebase.firestore();
-      const docRef = db.collection("payments").doc("main");
-
-      docRef.onSnapshot((doc) => {
-        payments = doc.exists ? doc.data().payments : {};
-        render();
-        updateBalance();
-        updateChart();
-      });
-    } catch (e) {
-      console.error("Ошибка загрузки данных:", e);
-      render();
-      updateBalance();
-      updateChart();
-    }
+    render();
+    updateBalance();
+    updateChart();
   }
 
   function render() {
@@ -93,15 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
       function save() {
         payments[i].amount = input.value;
         payments[i].paid = checkbox.checked;
-
-        try {
-          const db = firebase.firestore();
-          const docRef = db.collection("payments").doc("main");
-          docRef.set({ payments });
-        } catch (e) {
-          console.error("Ошибка сохранения в Firebase:", e);
-        }
-
         updateBalance();
         updateChart();
       }
