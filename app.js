@@ -144,4 +144,5 @@ document.addEventListener("DOMContentLoaded", () => {
     XLSX.utils.book_append_sheet(wb, ws, "Payments");
     XLSX.writeFile(wb, "payments.xlsx");
   });
+  console.log("Скрипт работает!");
 });
