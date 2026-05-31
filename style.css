@@ -1,0 +1,221 @@
+{
+    box-sizing: border-box;
+    }
+
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+background: #f4f6f8;
+color: #111;
+}
+
+.hidden {
+display: none;
+}
+
+/* LOGIN */
+
+.login {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+max-width: 420px;
+margin: auto;
+padding: 24px;
+}
+
+.login h2 {
+text-align: center;
+margin-bottom: 24px;
+}
+
+.login input {
+width: 100%;
+padding: 14px;
+border-radius: 12px;
+border: 1px solid #ddd;
+font-size: 16px;
+margin-bottom: 12px;
+}
+
+.login button {
+padding: 14px;
+border: none;
+border-radius: 12px;
+background: #111;
+color: white;
+font-size: 16px;
+cursor: pointer;
+}
+
+#error {
+color: red;
+text-align: center;
+margin-top: 12px;
+}
+
+/* HEADER */
+
+.header {
+position: sticky;
+top: 0;
+z-index: 10;
+background: #f4f6f8;
+padding: 12px;
+}
+
+.header h1 {
+margin: 0 0 12px;
+font-size: 20px;
+}
+
+/* BALANCE CARD */
+
+.balance-card {
+background: #111;
+color: white;
+border-radius: 18px;
+padding: 18px;
+margin-bottom: 12px;
+}
+
+.small-title {
+font-size: 12px;
+opacity: 0.8;
+}
+
+.total-value {
+font-size: 18px;
+font-weight: bold;
+margin-top: 4px;
+margin-bottom: 12px;
+}
+
+.balance-value {
+font-size: 26px;
+font-weight: bold;
+margin-top: 4px;
+}
+
+.progress {
+height: 10px;
+background: #333;
+border-radius: 999px;
+margin-top: 14px;
+overflow: hidden;
+}
+
+.progress-fill {
+height: 100%;
+width: 0%;
+background: #22c55e;
+transition: 0.4s;
+}
+
+#progressText {
+margin-top: 10px;
+font-size: 13px;
+color: #ddd;
+}
+
+/* CHART */
+
+.chart-card {
+background: white;
+border-radius: 18px;
+padding: 18px;
+margin-bottom: 12px;
+}
+
+.chart-card h3 {
+margin-top: 0;
+margin-bottom: 12px;
+}
+
+#paymentChart {
+max-height: 280px;
+}
+
+/* BUTTON */
+
+.export-btn {
+width: 100%;
+border: none;
+border-radius: 14px;
+padding: 14px;
+background: #2563eb;
+color: white;
+font-size: 15px;
+font-weight: bold;
+cursor: pointer;
+margin-bottom: 12px;
+}
+
+/* MONTHS */
+
+#months {
+padding: 12px;
+}
+
+.month {
+background: white;
+border-radius: 16px;
+padding: 14px;
+margin-bottom: 12px;
+box-shadow: 0 2px 6px rgba(0,0,0,.05);
+}
+
+.month-title {
+font-weight: bold;
+font-size: 15px;
+}
+
+.plan {
+margin-top: 4px;
+color: #666;
+font-size: 13px;
+}
+
+.amountInput {
+width: 100%;
+margin-top: 10px;
+padding: 12px;
+border-radius: 12px;
+border: 1px solid #ddd;
+font-size: 15px;
+}
+
+.checkbox-row {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-top: 12px;
+}
+
+.paid {
+border: 2px solid #22c55e;
+background: #f0fdf4;
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+
+.balance-value {
+font-size: 22px;
+}
+
+.total-value {
+font-size: 16px;
+}
+
+.month {
+padding: 12px;
+}
+
+#paymentChart {
+max-height: 220px;
+}
+
+}
