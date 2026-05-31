@@ -43,3 +43,48 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+let chart;
+
+function updateChart(payments) {
+  const canvas = document.getElementById("paymentChart");
+  if (!canvas) return;
+
+  const labels = [];
+  const data = [];
+
+  // собираем данные
+  for (let i = 0; i < 120; i++) {
+    const item = payments[i];
+
+    labels.push(i + 1); // просто номер месяца
+    data.push(Number(item?.amount || 0));
+  }
+
+  // если график уже есть — удаляем
+  if (chart) {
+    chart.destroy();
+  }
+
+  chart = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Выплаты",
+        data: data,
+        borderWidth: 2,
+        tension: 0.3, // делает линию плавной
+        pointRadius: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
