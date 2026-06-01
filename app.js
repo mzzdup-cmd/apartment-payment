@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM загружен');
 
   // Настройки
   const TOTAL_AMOUNT = 2400000;
@@ -9,10 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const monthNames = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 
-  // 1. Создаем полную структуру страницы
-  const appContainer = document.querySelector('.app-container');
-  
-  // Создаем блок с формой входа
+  // 1. Создаем форму входа и показываем её сразу
   const loginForm = document.createElement('div');
   loginForm.className = 'login-form';
   loginForm.innerHTML = `
@@ -20,66 +16,63 @@ document.addEventListener('DOMContentLoaded', function() {
     <input type="password" id="password" placeholder="Введите пароль" required>
     <button id="loginBtn">Войти</button>
   `;
+  document.body.appendChild(loginForm);
 
-  // Создаем блок с информацией об оплате
-  const paymentInfo = document.createElement('div');
-  paymentInfo.innerHTML = `
-    <div class="payment-title">Оплата квартиры</div>
-    <div class="total-value-remaining">2 400 000 ₽</div>
-    <div class="progress-bar">
-      <div class="progress-fill" style="width: 0%;"></div>
-      <div class="progress-text">0% (0 ₽)</div>
-    </div>
-    <div class="total-value">0 ₽</div>
-  `;
-
-  // Создаем блок графика
-  const chartBlock = document.createElement('div');
-  chartBlock.innerHTML = `
-    <h3>График выплат</h3>
-    <canvas id="paymentChart"></canvas>
-  `;
-
-  // Создаем блок месяцев
-  const monthsBlock = document.createElement('div');
-  monthsBlock.id = 'months';
-  monthsBlock.innerHTML = '<h3>Платежи по месяцам</h3>';
-
-  // Собираем всё в контейнер
-  appContainer.appendChild(loginForm);
-  appContainer.appendChild(paymentInfo);
-  appContainer.appendChild(chartBlock);
-  appContainer.appendChild(monthsBlock);
-
-  // 2. Скрываем всё, кроме формы входа (инициализация)
-  paymentInfo.style.display = 'none';
-  chartBlock.style.display = 'none';
-  monthsBlock.style.display = 'none';
-
-  // 3. Обработчик входа
+  // 2. Обработчик входа
   document.getElementById('loginBtn').addEventListener('click', function(e) {
     const pass = document.getElementById('password').value;
     if (pass === PASSWORD) {
-      // Показываем спрятанные блоки
-      paymentInfo.style.display = 'block';
-      chartBlock.style.display = 'block';
-      monthsBlock.style.display = 'block';
-      loginForm.remove(); // Убираем форму входа
-      generatePayments(); // Генерируем контент
+      loginForm.remove(); // Убираем форму
+      createApp(); // Создаем весь интерфейс
     } else {
       alert('Неверный пароль');
     }
   });
 
-  // 4. Функция генерации данных (вызывается только после входа)
-  function generatePayments() {
-    console.log('Запуск генерации платежей');
+  // 3. Функция создания всего интерфейса (вызывается только после входа)
+  function createApp() {
+    const appContainer = document.createElement('div');
+    appContainer.className = 'app-container';
 
+    // Блок с информацией
+    const paymentInfo = document.createElement('div');
+    paymentInfo.innerHTML = `
+      <div class="payment-title">Оплата квартиры</div>
+      <div class="total-value-remaining">2 400 000 ₽</div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 0%;"></div>
+        <div class="progress-text">0% (0 ₽)</div>
+      </div>
+      <div class="total-value">0 ₽</div>
+    `;
+
+    // Блок графика
+    const chartBlock = document.createElement('div');
+    chartBlock.innerHTML = `
+      <h3>График выплат</h3>
+      <canvas id="paymentChart"></canvas>
+    `;
+
+    // Блок месяцев
+    const monthsBlock = document.createElement('div');
+    monthsBlock.id = 'months';
+    monthsBlock.innerHTML = '<h3>Платежи по месяцам</h3>';
+
+    // Собираем всё
+    appContainer.appendChild(paymentInfo);
+    appContainer.appendChild(chartBlock);
+    appContainer.appendChild(monthsBlock);
+    document.body.appendChild(appContainer);
+
+    generatePayments();
+  }
+
+  // 4. Генерация платежей и графика
+  function generatePayments() {
     const monthlyPayment = TOTAL_AMOUNT / MONTHS_COUNT;
     const labels = [];
     const data = [];
 
-    // Собираем данные и создаем карточки
     for (let i = 0; i < MONTHS_COUNT; i++) {
       const date = new Date(START_DATE);
       date.setMonth(START_DATE.getMonth() + i);
@@ -90,18 +83,18 @@ document.addEventListener('DOMContentLoaded', function() {
       labels.push(`${monthName} ${year}`);
       data.push(monthlyPayment);
 
-      // Создаем карточку месяца
+      // Создаем карточку
       const monthCard = document.createElement('div');
       monthCard.className = 'month-card';
       monthCard.innerHTML = `
         <div class="month-title">${monthName} ${year}</div>
-        <input class="amount-input" type="number" placeholder="Сумма платежа"
+        <input class="amount-input" type="number" 
                value="\${monthlyPayment.toFixed(2)}" min="0" step="0.01">
       `;
       document.getElementById('months').appendChild(monthCard);
     }
 
-    // 5. Создаем график
+    // Создаем график
     const ctx = document.getElementById('paymentChart').getContext('2d');
     const paymentChart = new Chart(ctx, {
       type: 'line',
@@ -127,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    // 6. Логика обновления баланса
+    // Логика обновления
     document.querySelectorAll('.amount-input').forEach(input => {
       input.addEventListener('input', updateTotal);
     });
@@ -135,9 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateTotal() {
       const inputs = document.querySelectorAll('.amount-input');
       let paid = 0;
-      inputs.forEach(input => {
-        paid += parseFloat(input.value) || 0;
-      });
+      inputs.forEach(input => paid += parseFloat(input.value) || 0);
       const remaining = TOTAL_AMOUNT - paid;
       const percent = ((paid / TOTAL_AMOUNT) * 100).toFixed(2);
 
@@ -146,11 +137,10 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelector('.progress-fill').style.width = `\${percent}%`;
       document.querySelector('.total-value-remaining').textContent = remaining.toFixed(2) + ' ₽';
 
-      // Обновляем график
       paymentChart.data.datasets.data = Array.from(inputs, input => parseFloat(input.value) || 0);
       paymentChart.update();
     }
 
-    updateTotal(); // Первый запуск
+    updateTotal();
   }
 });
