@@ -1,56 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Оплата квартиры</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:," />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата квартиры</title>
+    <link rel="icon" href="data:," /> <!-- Убираем ошибку 404 с favicon -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-container">
-    <!-- ШАПКА -->
-    <header class="header">
-      <div class="header-content">
-        <h1>Оплата квартиры</h1>
-        <div class="balance-block">
-          <p class="total-title">Общая сумма к выплате</p>
-          <p class="total-value">2 400 000 ₽</p>
-        </div>
-        <div class="balance-block">
-          <p class="total-title">Остаток</p>
-          <p class="total-value-remaining">2 400 000 ₽</p>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 0%;"></div>
-        </div>
-        <p class="progress-text">Выплачено: 0% (0 ₽)</p>
-      </div>
-    </header>
-
-    <!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->
-    <main class="content">
-      <!-- ГРАФИК -->
-      <div class="chart-card">
-        <h3>График выплат</h3>
-        <canvas id="paymentChart" height="300"></canvas>
-      </div>
-
-      <!-- КНОПКА ЭКСПОРТА -->
-      <button class="export-btn">Скачать Excel</button>
-
-      <!-- СПИСОК МЕСЯЦЕВ -->
-      <div class="months-list">
-        <h3>Платежи по месяцам</h3>
-        <div id="months">
-          <!-- Сюда будет подгружаться список через JS -->
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <!-- Сначала подключаем библиотеку, потом наш скрипт -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="app.js"></script>
+    <!-- Оставляем пустым. Контент создаст скрипт -->
 </body>
 </html>
