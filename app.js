@@ -187,4 +187,4 @@ document.addEventListener('DOMContentLoaded', function() {
   // Первый запуск пересчета
   recalculateBalance();
 }
-}
+});
