@@ -1,227 +1,145 @@
+/* Базовые настройки */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f6f8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
+  background: #f8f9fa;
+  line-height: 1.6;
 }
 
-#app {
-  display: none;
+.app-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-/* LOGIN SCREEN */
-.login {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  max-width: 420px;
-  margin: auto;
-  padding: 24px;
-  text-align: center;
-}
-
-.login h2 {
-  margin-bottom: 24px;
-  color: #111;
-}
-
-.login input {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-  font-size: 16px;
-  margin-bottom: 12px;
-}
-
-.login button {
-  padding: 14px;
-  border: none;
-  border-radius: 12px;
-  background: #111;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-}
-
-#error {
-  color: red;
-  text-align: center;
-  margin-top: 12px;
-  height: 20px; /* Фиксированная высота для плавной анимации */
-}
-
-/* HEADER */
+/* ШАПКА (в стиле банковского приложения) */
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: #f4f6f8;
-  padding: 12px 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+  padding: 24px;
 }
 
-.header h1 {
-  margin: 0 0 12px;
-  font-size: 20px;
-  color: #111;
+.header-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
 }
 
-/* BALANCE CARD */
-.balance-card {
-  background: #111;
-  color: white;
-  border-radius: 18px;
-  padding: 18px;
-  margin-bottom: 12px;
-}
-
-.small-title {
+.total-title {
   font-size: 12px;
-  opacity: 0.8;
+  color: #777;
+  margin-bottom: 4px;
 }
 
 .total-value {
   font-size: 18px;
-  font-weight: bold;
-  margin-top: 4px;
-  margin-bottom: 12px;
+  font-weight: 600;
+  color: #2c3e50;
 }
 
-.balance-value {
-  font-size: 26px;
-  font-weight: bold;
-  margin-top: 4px;
-}
-
-.progress {
-  height: 10px;
-  background: #333;
-  border-radius: 999px;
-  margin-top: 14px;
+.progress-bar {
+  height: 8px;
+  background: #e8e8e8;
+  border-radius: 8px;
   overflow: hidden;
+  margin: 12px 0;
 }
 
 .progress-fill {
   height: 100%;
-  width: 0%;
-  background: #22c55e;
-  transition: width 0.4s ease;
+  background: #2ecc71;
+  transition: width 0.3s ease;
 }
 
-#progressText {
-  margin-top: 10px;
+.progress-text {
   font-size: 13px;
-  color: #ddd;
+  color: #777;
 }
 
-/* CHART CARD */
-.chart-card {
+/* КАРТОЧКИ (ГРАФИК, ЭКСПОРТ) */
+.chart-card, .months-list {
   background: white;
-  border-radius: 18px;
-  padding: 18px;
-  margin-bottom: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  margin-bottom: 24px;
 }
 
-.chart-card h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  color: #111;
+.chart-card h3, .months-list h3 {
+  color: #2c3e50;
+  font-size: 16px;
+  margin-bottom: 16px;
 }
 
-#paymentChart {
-  max-height: 280px;
-  width: 100%;
-}
-
-/* EXPORT BUTTON */
+/* КНОПКА ЭКСПОРТА (яркая, акцентная) */
 .export-btn {
-  width: 100%;
-  border: none;
-  border-radius: 14px;
-  padding: 14px;
-  background: #2563eb;
+  background: #3498db;
   color: white;
-  font-size: 15px;
-  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  margin-bottom: 12px;
+  width: 100%;
+  transition: background 0.3s;
 }
 
 .export-btn:hover {
-  background: #1d4ed8;
+  background: #2980b9;
 }
 
-/* MONTHS LIST */
-#months {
-  padding: 12px;
+/* СПИСОК МЕСЯЦЕВ */
+.months-list #months {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.month {
+.month-card {
   background: white;
-  border-radius: 16px;
-  padding: 14px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: calc(50% - 14px);
   transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.month:hover {
+.month-card:hover {
   transform: translateY(-2px);
 }
 
 .month-title {
-  font-weight: bold;
-  font-size: 15px;
-  color: #111;
+  font-weight: 600;
+  color: #2c3e50;
 }
 
-.amountInput {
+.amount-input {
   width: 100%;
-  margin-top: 10px;
-  padding: 12px;
-  border-radius: 12px;
   border: 1px solid #ddd;
-  font-size: 15px;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  margin-top: 8px;
 }
 
-.checkbox-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.checkbox-row input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-}
-
-/* MOBILE ADAPTATION */
+/* Адаптивность для мобильных */
 @media (max-width: 480px) {
-  .login {
-    padding: 16px;
+  .header-content {
+    grid-template-columns: 1fr;
   }
-
-  .balance-value {
-    font-size: 22px;
-  }
-
-  .total-value {
-    font-size: 16px;
-  }
-
-  .month {
-    padding: 12px;
-  }
-
-  #paymentChart {
-    max-height: 220px;
+  .month-card {
+    width: 100%;
   }
 }
