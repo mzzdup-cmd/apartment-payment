@@ -69,145 +69,125 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 4. Генерация платежей и графика
   function generatePayments() {
-    const monthlyPayment = TOTAL_AMOUNT / MONTHS_COUNT;
-    const labels = [];
-    const data = [];
+  const monthlyPayment = TOTAL_AMOUNT / MONTHS_COUNT;
+  const labels = [];
+  const data = [];
 
-    for (let i = 0; i < months.length; i++) {
-  const row = document.createElement('div');
-  row.className = 'payment-row';
+  // Получаем контейнер для месяцев
+  const monthsBlock = document.getElementById('months');
 
-  // Название месяца
-  const monthName = document.createElement('div');
-  monthName.className = 'month-name';
-  monthName.textContent = months[i];
+  // Генерируем строки с месяцами
+  for (let i = 0; i < MONTHS_COUNT; i++) {
+    const date = new Date(START_DATE);
+    date.setMonth(date.getMonth() + i);
+    const monthName = monthNames[date.getMonth()];
+    const year = date.getFullYear();
 
-  // Желаемая сумма (серым цветом)
-  const desiredAmount = document.createElement('div');
-  desiredAmount.className = 'desired-amount';
-  desiredAmount.textContent = '20 000 ₽';
+    const row = document.createElement('div');
+    row.className = 'payment-row';
 
-  // Поле ввода внесенной суммы
-  const input = document.createElement('input');
-  input.type = 'number';
-  input.min = '0';
-  input.className = 'payment-input';
+    // 1. Название месяца
+    const monthNameEl = document.createElement('div');
+    monthNameEl.className = 'month-name';
+    monthNameEl.textContent = `${monthName} ${year}`;
 
-  // Чекбокс "Сумма внесена"
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.className = 'payment-checkbox';
+    // 2. Желаемая сумма (серым цветом)
+    const desiredAmount = document.createElement('div');
+    desiredAmount.className = 'desired-amount';
+    desiredAmount.textContent = `\${monthlyPayment.toFixed(2)} ₽`;
 
-  const checkboxLabel = document.createElement('label');
-  checkboxLabel.htmlFor = `check-\${i}`;
-  checkboxLabel.textContent = 'Сумма внесена';
+    // 3. Поле ввода внесенной суммы
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.min = '0';
+    input.className = 'payment-input';
 
-      // Функция пересчета
-function recalculateBalance() {
-  let totalPaid = 0;
+    // 4. Чекбокс "Сумма внесена"
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'payment-checkbox';
 
-  // Данные для графика
-const ctx = document.getElementById('myChart').getContext('2d');
-const myChart = new Chart(ctx, {
-  type: 'doughnut',
-  data: {
-    labels: ['Оплачено', 'Остаток'],
-    datasets: [{
-      data: [0, 200000], // Начальные значения
-      backgroundColor: ['#4CAF50', '#f44336'],
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'bottom' }
-    }
+    const checkboxLabel = document.createElement('label');
+    checkboxLabel.htmlFor = `check-\${i}`;
+    checkboxLabel.textContent = 'Сумма внесена';
+
+    // Собираем строку
+    row.appendChild(monthNameEl);
+    row.appendChild(desiredAmount);
+    row.appendChild(input);
+    row.appendChild(checkbox);
+    row.appendChild(checkboxLabel);
+
+    monthsBlock.appendChild(row);
+
+    // Для графика
+    labels.push(`${monthName} ${year}`);
+    data.push(0); // Начальное значение платежа
   }
-});
 
-// Обновляем график при пересчете
-function updateChart() {
-  const paid = parseFloat(document.querySelector('.payment-input').value) || 0;
-  myChart.data.datasets.data = [paid, 200000 - paid];
-  myChart.update();
-}
-
-// Подключаем обновление графика
-inputs.forEach(input => {
-  input.addEventListener('input', updateChart);
-});
-
-  // Суммируем все введенные значения
-  const inputs = document.querySelectorAll('.payment-input');
-  inputs.forEach(input => {
-    if (input.value !== '') {
-      totalPaid += parseFloat(input.value);
+  // --- СОЗДАНИЕ ГРАФИКА ---
+  const ctx = document.getElementById('paymentChart').getContext('2d');
+  const paymentChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Платежи',
+        data: data,
+        borderColor: 'rgb(54, 162, 235)',
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        tension: 0.1,
+        borderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { stepSize: 200000 }
+        }
+      }
     }
   });
 
-  // Обновляем остаток (например, в div с id="balance")
-  const balance = document.getElementById('balance');
-  balance.textContent = `Остаток: \${200000 - totalPaid} ₽`; // 200 000 — общая сумма
-}
+  // --- ЛОГИКА ПЕРЕСЧЕТА ---
+  function recalculateBalance() {
+    let totalPaid = 0;
 
-// Подключаем обработчики событий
-const inputs = document.querySelectorAll('.payment-input');
-inputs.forEach(input => {
-  input.addEventListener('input', recalculateBalance);
-});
-
-// Добавляем обработчик для чекбоксов (если нужно)
-const checkboxes = document.querySelectorAll('.payment-checkbox');
-checkboxes.forEach(checkbox => {
-  checkbox.addEventListener('change', recalculateBalance);
-});
-
-  // Собираем всё в строку
-  row.appendChild(monthName);
-  row.appendChild(desiredAmount);
-  row.appendChild(input);
-  row.appendChild(checkbox);
-  row.appendChild(checkboxLabel);
-
-  form.appendChild(row);
-}
-
-      // Создаем карточку
-      const monthCard = document.createElement('div');
-      monthCard.className = 'month-card';
-      monthCard.innerHTML = `
-        <div class="month-title">${monthName} ${year}</div>
-        <input class="amount-input" type="number" 
-               value="\${monthlyPayment.toFixed(2)}" min="0" step="0.01">
-      `;
-      document.getElementById('months').appendChild(monthCard);
-    }
-
-    // Создаем график
-    const ctx = document.getElementById('paymentChart').getContext('2d');
-    const paymentChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Платежи',
-          data: data,
-          borderColor: 'rgb(54, 162, 235)',
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          tension: 0.1,
-          borderWidth: 3
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: { stepSize: 200000 }
-          }
-        }
+    const inputs = document.querySelectorAll('.payment-input');
+    inputs.forEach(input => {
+      if (input.value !== '') {
+        totalPaid += parseFloat(input.value);
       }
     });
+
+    // Обновляем прогресс-бар и текст
+    const percent = ((totalPaid / TOTAL_AMOUNT) * 100).toFixed(2);
+    document.querySelector('.progress-text').textContent = `${percent}% (${totalPaid.toFixed(2)} ₽)`;
+    document.querySelector('.progress-fill').style.width = `\${percent}%`;
+    document.querySelector('.total-value').textContent = totalPaid.toFixed(2) + ' ₽';
+    document.querySelector('.total-value-remaining').textContent = (TOTAL_AMOUNT - totalPaid).toFixed(2) + ' ₽';
+
+    // Обновляем данные на графике
+    paymentChart.data.datasets.data = Array.from(inputs, input => parseFloat(input.value) || 0);
+    paymentChart.update();
+  }
+
+  // Подключаем обработчики
+  const inputs = document.querySelectorAll('.payment-input');
+  inputs.forEach(input => {
+    input.addEventListener('input', recalculateBalance);
+  });
+
+  const checkboxes = document.querySelectorAll('.payment-checkbox');
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', recalculateBalance);
+  });
+
+  // Первый запуск пересчета
+  recalculateBalance();
+}
 
     // Логика обновления
     document.querySelectorAll('.amount-input').forEach(input => {
