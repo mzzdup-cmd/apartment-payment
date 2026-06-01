@@ -28,9 +28,9 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   padding: 24px;
-  position: sticky; /* Оставляем, чтобы она прилипала только при прокрутке */
-  top: 0;           /* Прилипает к верху */
-  z-index: 10;      /* Шапка всегда поверх контента */
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .header-content {
