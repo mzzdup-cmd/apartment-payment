@@ -1,16 +1,76 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оплата квартиры</title>
-    <link rel="icon" href="data:," /> <!-- Убираем ошибку с favicon -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <script src="app.js"></script> <!-- ВАЖНО: ПРОСТО ИМЯ ФАЙЛА, без ../ -->
-    <canvas id="myChart" width="200" height="200"></canvas>
-    <div id="balance">Остаток: 200 000 ₽</div>
-  </head>
-  <body>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оплата квартиры</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111111">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <!-- Вход -->
+  <div id="loginScreen" class="login-screen">
+<div class="login-card">
+
+  <h1>🏠 Оплата квартиры</h1>
+
+  <input
+    type="password"
+    id="password"
+    placeholder="Введите пароль">
+
+  <button id="loginBtn">
+    Войти
+  </button>
+
+  <div id="error" class="error"></div>
+
+</div>
+  </div>
+  <!-- Приложение -->
+  <div id="app" class="hidden">
+<header class="header">
+
+  <h1>🏠 Оплата квартиры</h1>
+
+  <div class="summary-card">
+
+    <div class="summary-label">
+      Общая сумма
+    </div>
+
+    <div class="summary-total">
+      2 400 000 ₽
+    </div>
+
+    <div class="summary-label">
+      Остаток
+    </div>
+
+    <div id="balance" class="summary-balance">
+      2 400 000 ₽
+    </div>
+
+  </div>
+
+  <div class="chart-card">
+
+    <canvas id="paymentChart"></canvas>
+
+  </div>
+
+  <div id="progressText" class="progress-text">
+    Выплачено: 0%
+  </div>
+
+</header>
+
+<main id="yearsContainer"></main>
+  </div>
+  <script src="app.js"></script>
+</body>
 </html>
