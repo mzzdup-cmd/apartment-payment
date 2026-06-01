@@ -67,8 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     generatePayments();
   }
 
-  // 4. Генерация платежей и графика
-  function generatePayments() {
+ function generatePayments() {
   const monthlyPayment = TOTAL_AMOUNT / MONTHS_COUNT;
   const labels = [];
   const data = [];
@@ -188,28 +187,3 @@ document.addEventListener('DOMContentLoaded', function() {
   // Первый запуск пересчета
   recalculateBalance();
 }
-
-    // Логика обновления
-    document.querySelectorAll('.amount-input').forEach(input => {
-      input.addEventListener('input', updateTotal);
-    });
-
-    function updateTotal() {
-      const inputs = document.querySelectorAll('.amount-input');
-      let paid = 0;
-      inputs.forEach(input => paid += parseFloat(input.value) || 0);
-      const remaining = TOTAL_AMOUNT - paid;
-      const percent = ((paid / TOTAL_AMOUNT) * 100).toFixed(2);
-
-      document.querySelector('.total-value').textContent = paid.toFixed(2) + ' ₽';
-      document.querySelector('.progress-text').textContent = `${percent}% (${paid.toFixed(2)} ₽)`;
-      document.querySelector('.progress-fill').style.width = `\${percent}%`;
-      document.querySelector('.total-value-remaining').textContent = remaining.toFixed(2) + ' ₽';
-
-      paymentChart.data.datasets.data = Array.from(inputs, input => parseFloat(input.value) || 0);
-      paymentChart.update();
-    }
-
-    updateTotal();
-  }
-});
