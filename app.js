@@ -102,6 +102,35 @@ document.addEventListener('DOMContentLoaded', function() {
   checkboxLabel.htmlFor = `check-\${i}`;
   checkboxLabel.textContent = 'Сумма внесена';
 
+      // Функция пересчета
+function recalculateBalance() {
+  let totalPaid = 0;
+
+  // Суммируем все введенные значения
+  const inputs = document.querySelectorAll('.payment-input');
+  inputs.forEach(input => {
+    if (input.value !== '') {
+      totalPaid += parseFloat(input.value);
+    }
+  });
+
+  // Обновляем остаток (например, в div с id="balance")
+  const balance = document.getElementById('balance');
+  balance.textContent = `Остаток: \${200000 - totalPaid} ₽`; // 200 000 — общая сумма
+}
+
+// Подключаем обработчики событий
+const inputs = document.querySelectorAll('.payment-input');
+inputs.forEach(input => {
+  input.addEventListener('input', recalculateBalance);
+});
+
+// Добавляем обработчик для чекбоксов (если нужно)
+const checkboxes = document.querySelectorAll('.payment-checkbox');
+checkboxes.forEach(checkbox => {
+  checkbox.addEventListener('change', recalculateBalance);
+});
+
   // Собираем всё в строку
   row.appendChild(monthName);
   row.appendChild(desiredAmount);
