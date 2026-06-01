@@ -4,78 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Оплата квартиры</title>
-  <!-- Инлайн‑иконка вместо favicon.ico -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text x='0' y='14'>🏠</text></svg>">
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#111111">
-  <!-- Chart.js -->
+  <!-- Подключаем Chart.js для графика -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Excel Export -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-  <!-- Вход -->
-  <div id="loginScreen" class="login">
-    <h2>🏠 Оплата квартиры</h2>
-    <input
-      type="password"
-      id="password"
-      placeholder="Введите пароль">
-    <button id="loginBtn">
-      Войти
-    </button>
-    <p id="error"></p>
-  </div>
-
-  <!-- Основное приложение -->
-  <div id="app">
-    <div class="header">
-      <h1>🏠 Оплата квартиры</h1>
-      <div class="balance-card">
-        <div class="small-title">
-          Общая сумма к выплате
+  <div class="app-container">
+    <!-- ШАПКА -->
+    <header class="header">
+      <div class="header-content">
+        <h1>Оплата квартиры</h1>
+        <div class="balance-block">
+          <p class="total-title">Общая сумма к выплате</p>
+          <p class="total-value">2 400 000 ₽</p>
         </div>
-        <div class="total-value">
-          2 400 000 ₽
+        <div class="balance-block">
+          <p class="total-title">Остаток</p>
+          <p class="total-value">2 400 000 ₽</p>
         </div>
-        <div class="small-title">
-          Остаток
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%;"></div>
         </div>
-        <div id="balance" class="balance-value">
-          2 400 000 ₽
-        </div>
-        <div class="progress">
-          <div
-            id="progressFill"
-            class="progress-fill">
-          </div>
-        </div>
-        <div id="progressText">
-          Выплачено: 0%
-        </div>
+        <p class="progress-text">Выплачено: 0% (0 ₽)</p>
       </div>
+    </header>
 
-      <!-- График -->
+    <!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->
+    <main class="content">
+      <!-- ГРАФИК -->
       <div class="chart-card">
-        <h3>📊 График выплат</h3>
+        <h3>График выплат</h3>
         <canvas id="paymentChart"></canvas>
       </div>
 
-      <!-- Excel -->
-      <button id="exportBtn" class="export-btn">
-        📥 Скачать Excel
-      </button>
-    </div>
+      <!-- КНОПКА ЭКСПОРТА -->
+      <button class="export-btn">Скачать Excel</button>
 
-    <!-- Месяцы -->
-    <div id="months"></div>
+      <!-- СПИСОК МЕСЯЦЕВ -->
+      <div class="months-list">
+        <h3>Платежи по месяцам</h3>
+        <div id="months">
+          <!-- Сюда будет подгружаться список через JS -->
+        </div>
+      </div>
+    </main>
   </div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
-  <!-- Код приложения -->
   <script src="app.js"></script>
 </body>
 </html>
