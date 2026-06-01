@@ -1,190 +1,275 @@
-document.addEventListener('DOMContentLoaded', function() {
+const CORRECT_PASSWORD = "1234";
 
-  // Настройки
-  const TOTAL_AMOUNT = 2400000;
-  const PASSWORD = '1234';
-  const START_DATE = new Date(2026, 8, 1); // Сентябрь 2026
-  const MONTHS_COUNT = 120;
+const firebaseConfig = {
+  apiKey: "AIzaSyC-3krnSTHSeDcEPjMrI_fklf_BylTFAGA",
+  authDomain: "apartment-payment.firebaseapp.com",
+  projectId: "apartment-payment",
+  storageBucket: "apartment-payment.firebasestorage.app",
+  messagingSenderId: "335389444987",
+  appId: "1:335389444987:web:4e5e38ace539de7fd60bde",
+  measurementId: "G-3LXY8Z2BCP"
+};
 
-  const monthNames = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+firebase.initializeApp(firebaseConfig);
 
-  // 1. Создаем форму входа и показываем её сразу
-  const loginForm = document.createElement('div');
-  loginForm.className = 'login-form';
-  loginForm.innerHTML = `
-    <h3>Вход</h3>
-    <input type="password" id="password" placeholder="Введите пароль" required>
-    <button id="loginBtn">Войти</button>
-  `;
-  document.body.appendChild(loginForm);
+const db = firebase.firestore();
+const docRef = db.collection("payments").doc("main");
 
-  // 2. Обработчик входа
-  document.getElementById('loginBtn').addEventListener('click', function(e) {
-    const pass = document.getElementById('password').value;
-    if (pass === PASSWORD) {
-      loginForm.remove(); // Убираем форму
-      createApp(); // Создаем весь интерфейс
+const TOTAL_AMOUNT = 2400000;
+const MONTHLY_PLAN = 20000;
+
+const loginScreen = document.getElementById("loginScreen");
+const appScreen = document.getElementById("app");
+const loginBtn = document.getElementById("loginBtn");
+const errorEl = document.getElementById("error");
+
+const yearsContainer = document.getElementById("yearsContainer");
+const balanceEl = document.getElementById("balance");
+const progressText = document.getElementById("progressText");
+
+let chart = null;
+let payments = {};
+
+const monthNames = [
+  "Январь",
+  "Февраль",
+  "Март",
+  "Апрель",
+  "Май",
+  "Июнь",
+  "Июль",
+  "Август",
+  "Сентябрь",
+  "Октябрь",
+  "Ноябрь",
+  "Декабрь"
+];
+
+loginBtn.addEventListener("click", () => {
+  const pass = document.getElementById("password").value;
+
+  if (pass === CORRECT_PASSWORD) {
+    loginScreen.classList.add("hidden");
+    appScreen.classList.remove("hidden");
+    startRealtime();
+  } else {
+    errorEl.textContent = "Неверный пароль";
+  }
+});
+
+function startRealtime() {
+  docRef.onSnapshot((doc) => {
+    if (doc.exists) {
+      payments = doc.data().payments || {};
     } else {
-      alert('Неверный пароль');
+      payments = {};
+    }
+
+    renderYears();
+    updateSummary();
+  });
+}
+
+function renderYears() {
+  yearsContainer.innerHTML = "";
+
+  const years = {};
+
+  let index = 0;
+
+  for (let year = 2026; year <= 2036; year++) {
+    years[year] = [];
+
+    let startMonth = 0;
+    let endMonth = 11;
+
+    if (year === 2026) {
+      startMonth = 8;
+    }
+
+    if (year === 2036) {
+      endMonth = 7;
+    }
+
+    for (let month = startMonth; month <= endMonth; month++) {
+      years[year].push({
+        index,
+        month,
+        year
+      });
+
+      index++;
+    }
+  }
+
+  Object.keys(years).forEach((year) => {
+    const yearCard = document.createElement("div");
+    yearCard.className = "year-card";
+
+    const header = document.createElement("div");
+    header.className = "year-header";
+
+    header.innerHTML = `
+      <span>${year}</span>
+      <span class="arrow ${year == 2026 ? "open" : ""}">
+        ▼
+      </span>
+    `;
+
+    const content = document.createElement("div");
+    content.className =
+      "year-content " +
+      (year == 2026 ? "open" : "");
+
+    header.addEventListener("click", () => {
+      content.classList.toggle("open");
+      header
+        .querySelector(".arrow")
+        .classList.toggle("open");
+    });
+
+    years[year].forEach((item) => {
+      if (!payments[item.index]) {
+        payments[item.index] = {
+          amount: "",
+          paid: false
+        };
+      }
+
+      const monthRow = document.createElement("div");
+      monthRow.className = "month-row";
+
+      monthRow.innerHTML = `
+        <div class="month-name">
+          ${monthNames[item.month]}
+        </div>
+
+        <div class="plan">
+          План: ${MONTHLY_PLAN.toLocaleString("ru-RU")} ₽
+        </div>
+
+        <div class="payment-controls">
+
+          <input
+            type="number"
+            class="amount-input"
+            value="${payments[item.index].amount}"
+            placeholder="Введите сумму">
+
+          <input
+            type="checkbox"
+            class="paid-checkbox"
+            ${payments[item.index].paid ? "checked" : ""}>
+
+        </div>
+      `;
+
+      const amountInput =
+        monthRow.querySelector(".amount-input");
+
+      const checkbox =
+        monthRow.querySelector(".paid-checkbox");
+
+      function save() {
+        payments[item.index] = {
+          amount: amountInput.value,
+          paid: checkbox.checked
+        };
+
+        docRef.set({
+          payments: payments
+        });
+
+        updateSummary();
+      }
+      amountInput.addEventListener("input", save);
+      checkbox.addEventListener("change", save);
+
+      content.appendChild(monthRow);
+    });
+
+    yearCard.appendChild(header);
+    yearCard.appendChild(content);
+
+    yearsContainer.appendChild(yearCard);
+  });
+}
+
+function updateSummary() {
+  let paidTotal = 0;
+
+  Object.values(payments).forEach((item) => {
+    if (item.paid) {
+      paidTotal += Number(item.amount || 0);
     }
   });
 
-  // 3. Функция создания всего интерфейса (вызывается только после входа)
-  function createApp() {
-    const appContainer = document.createElement('div');
-    appContainer.className = 'app-container';
+  const balance = TOTAL_AMOUNT - paidTotal;
 
-    // Блок с информацией
-    const paymentInfo = document.createElement('div');
-    paymentInfo.innerHTML = `
-      <div class="payment-title">Оплата квартиры</div>
-      <div class="total-value-remaining">2 400 000 ₽</div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 0%;"></div>
-        <div class="progress-text">0% (0 ₽)</div>
-      </div>
-      <div class="total-value">0 ₽</div>
-    `;
+  balanceEl.textContent =
+    balance.toLocaleString("ru-RU") + " ₽";
 
-    // Блок графика
-    const chartBlock = document.createElement('div');
-    chartBlock.innerHTML = `
-      <h3>График выплат</h3>
-      <canvas id="paymentChart"></canvas>
-    `;
+  const percent =
+    Math.round((paidTotal / TOTAL_AMOUNT) * 100);
 
-    // Блок месяцев
-    const monthsBlock = document.createElement('div');
-    monthsBlock.id = 'months';
-    monthsBlock.innerHTML = '<h3>Платежи по месяцам</h3>';
+  progressText.textContent =
+    "Выплачено: " +
+    percent +
+    "% (" +
+    paidTotal.toLocaleString("ru-RU") +
+    " ₽)";
 
-    // Собираем всё
-    appContainer.appendChild(paymentInfo);
-    appContainer.appendChild(chartBlock);
-    appContainer.appendChild(monthsBlock);
-    document.body.appendChild(appContainer);
+  drawChart(percent);
+}
 
-    generatePayments();
+function drawChart(percent) {
+  const ctx =
+    document
+      .getElementById("paymentChart")
+      .getContext("2d");
+
+  if (chart) {
+    chart.destroy();
   }
 
- function generatePayments() {
-  const monthlyPayment = TOTAL_AMOUNT / MONTHS_COUNT;
-  const labels = [];
-  const data = [];
+  chart = new Chart(ctx, {
+    type: "doughnut",
 
-  // Получаем контейнер для месяцев
-  const monthsBlock = document.getElementById('months');
-
-  // Генерируем строки с месяцами
-  for (let i = 0; i < MONTHS_COUNT; i++) {
-    const date = new Date(START_DATE);
-    date.setMonth(date.getMonth() + i);
-    const monthName = monthNames[date.getMonth()];
-    const year = date.getFullYear();
-
-    const row = document.createElement('div');
-    row.className = 'payment-row';
-
-    // 1. Название месяца
-    const monthNameEl = document.createElement('div');
-    monthNameEl.className = 'month-name';
-    monthNameEl.textContent = `${monthName} ${year}`;
-
-    // 2. Желаемая сумма (серым цветом)
-    const desiredAmount = document.createElement('div');
-    desiredAmount.className = 'desired-amount';
-    desiredAmount.textContent = `\${monthlyPayment.toFixed(2)} ₽`;
-
-    // 3. Поле ввода внесенной суммы
-    const input = document.createElement('input');
-    input.type = 'number';
-    input.min = '0';
-    input.className = 'payment-input';
-
-    // 4. Чекбокс "Сумма внесена"
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.className = 'payment-checkbox';
-
-    const checkboxLabel = document.createElement('label');
-    checkboxLabel.htmlFor = `check-\${i}`;
-    checkboxLabel.textContent = 'Сумма внесена';
-
-    // Собираем строку
-    row.appendChild(monthNameEl);
-    row.appendChild(desiredAmount);
-    row.appendChild(input);
-    row.appendChild(checkbox);
-    row.appendChild(checkboxLabel);
-
-    monthsBlock.appendChild(row);
-
-    // Для графика
-    labels.push(`${monthName} ${year}`);
-    data.push(0); // Начальное значение платежа
-  }
-
-  // --- СОЗДАНИЕ ГРАФИКА ---
-  const ctx = document.getElementById('paymentChart').getContext('2d');
-  const paymentChart = new Chart(ctx, {
-    type: 'line',
     data: {
-      labels: labels,
-      datasets: [{
-        label: 'Платежи',
-        data: data,
-        borderColor: 'rgb(54, 162, 235)',
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        tension: 0.1,
-        borderWidth: 3
-      }]
+      labels: [
+        "Выплачено",
+        "Осталось"
+      ],
+
+      datasets: [
+        {
+          data: [
+            percent,
+            100 - percent
+          ],
+
+          backgroundColor: [
+            "#22c55e",
+            "#e5e7eb"
+          ],
+
+          borderWidth: 0
+        }
+      ]
     },
+
     options: {
       responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { stepSize: 200000 }
+
+      plugins: {
+        legend: {
+          position: "bottom"
         }
       }
     }
   });
-
-  // --- ЛОГИКА ПЕРЕСЧЕТА ---
-  function recalculateBalance() {
-    let totalPaid = 0;
-
-    const inputs = document.querySelectorAll('.payment-input');
-    inputs.forEach(input => {
-      if (input.value !== '') {
-        totalPaid += parseFloat(input.value);
-      }
-    });
-
-    // Обновляем прогресс-бар и текст
-    const percent = ((totalPaid / TOTAL_AMOUNT) * 100).toFixed(2);
-    document.querySelector('.progress-text').textContent = `${percent}% (${totalPaid.toFixed(2)} ₽)`;
-    document.querySelector('.progress-fill').style.width = `\${percent}%`;
-    document.querySelector('.total-value').textContent = totalPaid.toFixed(2) + ' ₽';
-    document.querySelector('.total-value-remaining').textContent = (TOTAL_AMOUNT - totalPaid).toFixed(2) + ' ₽';
-
-    // Обновляем данные на графике
-    paymentChart.data.datasets.data = Array.from(inputs, input => parseFloat(input.value) || 0);
-    paymentChart.update();
-  }
-
-  // Подключаем обработчики
-  const inputs = document.querySelectorAll('.payment-input');
-  inputs.forEach(input => {
-    input.addEventListener('input', recalculateBalance);
-  });
-
-  const checkboxes = document.querySelectorAll('.payment-checkbox');
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', recalculateBalance);
-  });
-
-  // Первый запуск пересчета
-  recalculateBalance();
 }
-});
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
