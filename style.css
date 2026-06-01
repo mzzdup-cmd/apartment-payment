@@ -65,4 +65,27 @@ canvas {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
+
+  .payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.desired-amount {
+  color: #888; /* Серый цвет */
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.payment-input {
+  width: 100px;
+  text-align: right;
+}
+
+.payment-checkbox {
+  margin: 0 10px;
 }
