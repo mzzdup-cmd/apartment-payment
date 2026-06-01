@@ -1,14 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Настройки
-  const TOTAL_AMOUNT = 2400000; // Общая сумма
-  const PASSWORD = '1234'; // Пароль для входа
-  const START_DATE = new Date(2026, 8, 1); // Сентябрь 2026 (месяц 8, т.к. в JS январь = 0)
-  const MONTHS_COUNT = 120; // 10 лет вперёд
+  console.log('DOM загружен, начинаем инициализацию'); // Отладка
 
-  // Мапы для названий месяцев
+  // Настройки
+  const TOTAL_AMOUNT = 2400000;
+  const PASSWORD = '1234';
+  const START_DATE = new Date(2026, 8, 1); // Сентябрь 2026
+  const MONTHS_COUNT = 120;
+
   const monthNames = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 
-  // 1. Создаём форму входа
+  // 1. Создаем форму входа
   const loginForm = document.createElement('div');
   loginForm.className = 'login-form';
   loginForm.innerHTML = `
@@ -28,11 +29,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // 2. Функция генерации платежей и графика
+  // 2. Генерация платежей
   function generatePayments() {
-    const monthsContainer = document.getElementById('months');
-    monthsContainer.innerHTML = '';
+    console.log('Запуск генерации платежей'); // Отладка
 
+    const monthsContainer = document.getElementById('months');
+    if (!monthsContainer) {
+      console.error('Не найден контейнер #months');
+      return;
+    }
+
+    monthsContainer.innerHTML = '';
     const monthlyPayment = TOTAL_AMOUNT / MONTHS_COUNT;
     const labels = [];
     const data = [];
@@ -52,13 +59,18 @@ document.addEventListener('DOMContentLoaded', function() {
       monthCard.innerHTML = `
         <div class="month-title">${monthName} ${year}</div>
         <input class="amount-input" type="number" placeholder="Сумма платежа"
-               value="${monthlyPayment.toFixed(2)}" min="0" step="0.01">
+               value="\${monthlyPayment.toFixed(2)}" min="0" step="0.01">
       `;
       monthsContainer.appendChild(monthCard);
     }
 
-    // 3. Настройка графика выплат
+    // 3. График
     const ctx = document.getElementById('paymentChart').getContext('2d');
+    if (!ctx) {
+      console.error('Не найден canvas #paymentChart');
+      return;
+    }
+
     const paymentChart = new Chart(ctx, {
       type: 'line',
       data: {
@@ -79,20 +91,11 @@ document.addEventListener('DOMContentLoaded', function() {
             beginAtZero: true,
             ticks: { stepSize: 200000 }
           }
-        },
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function(tooltipItem) {
-                return `${tooltipItem.label}: ${tooltipItem.raw.toFixed(2)} ₽`;
-              }
-            }
-          }
         }
       }
     });
 
-    // 4. Обновление баланса при изменении ввода
+    // 4. Обновление баланса
     document.querySelectorAll('.amount-input').forEach(input => {
       input.addEventListener('input', updateTotal);
     });
@@ -108,15 +111,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
       document.querySelector('.total-value').textContent = paid.toFixed(2) + ' ₽';
       document.querySelector('.progress-text').textContent = `${percent}% (${paid.toFixed(2)} ₽)`;
-      document.querySelector('.progress-fill').style.width = `${percent}%`;
+      document.querySelector('.progress-fill').style.width = `\${percent}%`;
       document.querySelector('.total-value-remaining').textContent = remaining.toFixed(2) + ' ₽';
 
-      // Обновляем данные на графике
-      paymentChart.data.datasets[0].data = Array.from(inputs, input => parseFloat(input.value) || 0);
+      paymentChart.data.datasets.data = Array.from(inputs, input => parseFloat(input.value) || 0);
       paymentChart.update();
     }
 
-    // Вызываем первый раз для отображения начальных значений
     updateTotal();
   }
 });
