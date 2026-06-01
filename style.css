@@ -16,21 +16,22 @@ body {
   max-width: 500px;
   margin: 0 auto;
   padding: 20px;
-  min-height: 100vh; /* 1. Занимает всю высоту экрана */
-  display: flex;     /* 2. Включаем флексбокс */
-  flex-direction: column; /* 3. Элементы идут друг за другом */
+  min-height: 100vh; /* ВАЖНО: задаем высоту страницы */
+  display: flex;
+  flex-direction: column;
 }
 
-
-/* ШАПКА (в стиле банковского приложения) */
+/* ШАПКА (БАЛАНС) */
 .header {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   padding: 24px;
+  margin-bottom: 24px; /* Отступ от следующего блока */
   position: sticky;
   top: 0;
   z-index: 10;
+  width: 100%;
 }
 
 .header-content {
@@ -70,6 +71,11 @@ body {
   color: #777;
 }
 
+/* ОСНОВНОЕ СОДЕРЖАНИЕ */
+.content {
+  flex: 1; /* Позволяет контенту занимать оставшееся место */
+}
+
 /* КАРТОЧКИ (ГРАФИК, ЭКСПОРТ) */
 .chart-card, .months-list {
   background: white;
@@ -85,7 +91,7 @@ body {
   margin-bottom: 16px;
 }
 
-/* КНОПКА ЭКСПОРТА (яркая, акцентная) */
+/* КНОПКА ЭКСПОРТА */
 .export-btn {
   background: #3498db;
   color: white;
