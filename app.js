@@ -73,15 +73,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const labels = [];
     const data = [];
 
-    for (let i = 0; i < MONTHS_COUNT; i++) {
-      const date = new Date(START_DATE);
-      date.setMonth(START_DATE.getMonth() + i);
-      const monthIndex = date.getMonth();
-      const monthName = monthNames[monthIndex];
-      const year = date.getFullYear();
+    for (let i = 0; i < months.length; i++) {
+  const row = document.createElement('div');
+  row.className = 'payment-row';
 
-      labels.push(`${monthName} ${year}`);
-      data.push(monthlyPayment);
+  // Название месяца
+  const monthName = document.createElement('div');
+  monthName.className = 'month-name';
+  monthName.textContent = months[i];
+
+  // Желаемая сумма (серым цветом)
+  const desiredAmount = document.createElement('div');
+  desiredAmount.className = 'desired-amount';
+  desiredAmount.textContent = '20 000 ₽';
+
+  // Поле ввода внесенной суммы
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.min = '0';
+  input.className = 'payment-input';
+
+  // Чекбокс "Сумма внесена"
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.className = 'payment-checkbox';
+
+  const checkboxLabel = document.createElement('label');
+  checkboxLabel.htmlFor = `check-\${i}`;
+  checkboxLabel.textContent = 'Сумма внесена';
+
+  // Собираем всё в строку
+  row.appendChild(monthName);
+  row.appendChild(desiredAmount);
+  row.appendChild(input);
+  row.appendChild(checkbox);
+  row.appendChild(checkboxLabel);
+
+  form.appendChild(row);
+}
 
       // Создаем карточку
       const monthCard = document.createElement('div');
