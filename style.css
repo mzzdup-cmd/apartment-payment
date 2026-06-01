@@ -22,6 +22,8 @@ body {
   border-radius: 10px;
   overflow: hidden;
   margin: 10px 0;
+  display: flex; /* Добавила для выравнивания текста */
+  align-items: center;
 }
 
 .progress-fill {
@@ -31,10 +33,7 @@ body {
 }
 
 .progress-text {
-  position: relative;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-left: 10px; /* Убрала абсолютное позиционирование, выровняла отступом */
   color: #333;
 }
 
@@ -44,29 +43,8 @@ canvas {
   height: 300px;
 }
 
-/* Платежи по месяцам */
-.month-card {
-  background-color: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.month-title {
-  font-weight: bold;
-}
-
-.amount-input {
-  width: 150px;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-
-  .payment-row {
+/* Платежи по месяцам (НОВАЯ СТРУКТУРА) */
+.payment-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -75,17 +53,44 @@ canvas {
   border-bottom: 1px solid #eee;
 }
 
+.month-name {
+  font-weight: bold;
+  min-width: 120px; /* Фиксируем ширину для выравнивания */
+}
+
 .desired-amount {
   color: #888; /* Серый цвет */
   font-size: 0.9em;
   margin-left: 10px;
+  font-style: italic; /* Можно добавить курсив для акцента */
 }
 
 .payment-input {
-  width: 100px;
+  width: 120px; /* Увеличила для удобства ввода */
   text-align: right;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
 }
 
 .payment-checkbox {
   margin: 0 10px;
+}
+
+.payment-checkbox + label {
+  font-size: 0.9em;
+  color: #666;
+}
+
+/* Общие отступы для контента внутри app-container */
+.payment-title {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+}
+
+.total-value, .total-value-remaining {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin: 5px 0;
 }
