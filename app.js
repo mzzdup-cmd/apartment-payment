@@ -106,6 +106,37 @@ document.addEventListener('DOMContentLoaded', function() {
 function recalculateBalance() {
   let totalPaid = 0;
 
+  // Данные для графика
+const ctx = document.getElementById('myChart').getContext('2d');
+const myChart = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Оплачено', 'Остаток'],
+    datasets: [{
+      data: [0, 200000], // Начальные значения
+      backgroundColor: ['#4CAF50', '#f44336'],
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' }
+    }
+  }
+});
+
+// Обновляем график при пересчете
+function updateChart() {
+  const paid = parseFloat(document.querySelector('.payment-input').value) || 0;
+  myChart.data.datasets.data = [paid, 200000 - paid];
+  myChart.update();
+}
+
+// Подключаем обновление графика
+inputs.forEach(input => {
+  input.addEventListener('input', updateChart);
+});
+
   // Суммируем все введенные значения
   const inputs = document.querySelectorAll('.payment-input');
   inputs.forEach(input => {
