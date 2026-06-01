@@ -16,15 +16,21 @@ body {
   max-width: 500px;
   margin: 0 auto;
   padding: 20px;
+  min-height: 100vh; /* 1. Занимает всю высоту экрана */
+  display: flex;     /* 2. Включаем флексбокс */
+  flex-direction: column; /* 3. Элементы идут друг за другом */
 }
+
 
 /* ШАПКА (в стиле банковского приложения) */
 .header {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  margin-bottom: 24px;
   padding: 24px;
+  position: sticky; /* Оставляем, чтобы она прилипала только при прокрутке */
+  top: 0;           /* Прилипает к верху */
+  z-index: 10;      /* Шапка всегда поверх контента */
 }
 
 .header-content {
