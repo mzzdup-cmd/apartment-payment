@@ -76,10 +76,18 @@ margin: 0 0 16px;
 /* КАРТОЧКА */
 
 .summary-card {
-background: linear-gradient(135deg,#111,#333);
-color: white;
-padding: 20px;
-border-radius: 24px;
+  background: linear-gradient(
+    135deg,
+    #111827,
+    #1f2937
+  );
+
+  color: white;
+  padding: 28px;
+  border-radius: 28px;
+  box-shadow:
+    0 15px 40px rgba(0,0,0,.15);
+  margin-bottom: 20px;
 }
 
 .summary-label {
@@ -88,24 +96,27 @@ font-size: 13px;
 }
 
 .summary-total {
-font-size: 22px;
-font-weight: bold;
-margin-bottom: 18px;
+  font-size: 18px;
+  opacity: .85;
+  margin-bottom: 20px;
 }
 
 .summary-balance {
-font-size: 32px;
-font-weight: bold;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: 8px;
 }
 
 /* ГРАФИК */
 
 .chart-card {
-margin-top: 20px;
-background: white;
-border-radius: 24px;
-padding: 20px;
-box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+  margin-top: 20px;
+  background: white;
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.08);
 }
 
 #paymentChart {
@@ -122,11 +133,13 @@ font-weight: bold;
 /* ГОД */
 
 .year-card {
-background: white;
-margin: 12px;
-border-radius: 18px;
-overflow: hidden;
-box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+  background: white;
+  margin: 14px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 8px 20px rgba(0,0,0,.05);
+  transition: .2s;
 }
 
 .year-header {
@@ -159,8 +172,9 @@ display: block;
 /* МЕСЯЦ */
 
 .month-row {
-padding: 14px 18px;
-border-bottom: 1px solid #f1f1f1;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  transition: .2s;
 }
 
 .month-row:last-child {
@@ -185,10 +199,11 @@ align-items: center;
 }
 
 .amount-input {
-flex: 1;
-padding: 10px;
-border-radius: 10px;
-border: 1px solid #ddd;
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
 }
 
 .paid-checkbox {
