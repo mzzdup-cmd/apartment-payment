@@ -1,96 +1,211 @@
-/* Базовые настройки */
+{
+    box-sizing: border-box;
+    }
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f5f5f5; /* Легкий фон, чтобы видеть границы блоков */
+margin: 0;
+background: #f3f5f9;
+font-family: -apple-system, BlinkMacSystemFont, “Segoe UI”, sans-serif;
+color: #111;
 }
 
-.app-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.hidden {
+display: none;
 }
 
-/* Блок прогресса */
-.progress-bar {
-  height: 20px;
-  background-color: #e0e0e0;
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 10px 0;
-  display: flex; /* Добавила для выравнивания текста */
-  align-items: center;
+/* ВХОД */
+
+.login-screen {
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
 }
 
-.progress-fill {
-  height: 100%;
-  background-color: #4CAF50;
-  transition: width 0.3s;
+.login-card {
+width: 100%;
+max-width: 420px;
+background: white;
+border-radius: 24px;
+padding: 24px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.login-card h1 {
+text-align: center;
+margin-bottom: 20px;
+}
+
+.login-card input {
+width: 100%;
+padding: 14px;
+border: 1px solid #ddd;
+border-radius: 12px;
+font-size: 16px;
+}
+
+.login-card button {
+width: 100%;
+margin-top: 12px;
+padding: 14px;
+border: none;
+border-radius: 12px;
+background: #111;
+color: white;
+font-size: 16px;
+cursor: pointer;
+}
+
+.error {
+color: red;
+margin-top: 10px;
+text-align: center;
+}
+
+/* HEADER */
+
+.header {
+padding: 20px;
+}
+
+.header h1 {
+margin: 0 0 16px;
+}
+
+/* КАРТОЧКА */
+
+.summary-card {
+background: linear-gradient(135deg,#111,#333);
+color: white;
+padding: 20px;
+border-radius: 24px;
+}
+
+.summary-label {
+opacity: .7;
+font-size: 13px;
+}
+
+.summary-total {
+font-size: 22px;
+font-weight: bold;
+margin-bottom: 18px;
+}
+
+.summary-balance {
+font-size: 32px;
+font-weight: bold;
+}
+
+/* ГРАФИК */
+
+.chart-card {
+margin-top: 20px;
+background: white;
+border-radius: 24px;
+padding: 20px;
+box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+}
+
+#paymentChart {
+width: 100%;
+max-height: 280px;
 }
 
 .progress-text {
-  margin-left: 10px; /* Убрала абсолютное позиционирование, выровняла отступом */
-  color: #333;
+text-align: center;
+margin-top: 12px;
+font-weight: bold;
 }
 
-/* График */
-canvas {
-  max-width: 100%;
-  height: 300px;
+/* ГОД */
+
+.year-card {
+background: white;
+margin: 12px;
+border-radius: 18px;
+overflow: hidden;
+box-shadow: 0 3px 12px rgba(0,0,0,0.05);
 }
 
-/* Платежи по месяцам (НОВАЯ СТРУКТУРА) */
-.payment-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding: 5px 0;
-  border-bottom: 1px solid #eee;
+.year-header {
+padding: 18px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+cursor: pointer;
+font-weight: bold;
+font-size: 18px;
+}
+
+.arrow {
+transition: .3s;
+}
+
+.arrow.open {
+transform: rotate(180deg);
+}
+
+.year-content {
+display: none;
+border-top: 1px solid #eee;
+}
+
+.year-content.open {
+display: block;
+}
+
+/* МЕСЯЦ */
+
+.month-row {
+padding: 14px 18px;
+border-bottom: 1px solid #f1f1f1;
+}
+
+.month-row:last-child {
+border-bottom: none;
 }
 
 .month-name {
-  font-weight: bold;
-  min-width: 120px; /* Фиксируем ширину для выравнивания */
+font-weight: bold;
+margin-bottom: 4px;
 }
 
-.desired-amount {
-  color: #888; /* Серый цвет */
-  font-size: 0.9em;
-  margin-left: 10px;
-  font-style: italic; /* Можно добавить курсив для акцента */
+.plan {
+color: #999;
+font-size: 13px;
+margin-bottom: 8px;
 }
 
-.payment-input {
-  width: 120px; /* Увеличила для удобства ввода */
-  text-align: right;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 5px;
+.payment-controls {
+display: flex;
+gap: 10px;
+align-items: center;
 }
 
-.payment-checkbox {
-  margin: 0 10px;
+.amount-input {
+flex: 1;
+padding: 10px;
+border-radius: 10px;
+border: 1px solid #ddd;
 }
 
-.payment-checkbox + label {
-  font-size: 0.9em;
-  color: #666;
+.paid-checkbox {
+width: 22px;
+height: 22px;
 }
 
-/* Общие отступы для контента внутри app-container */
-.payment-title {
-  text-align: center;
-  margin-bottom: 15px;
-  font-size: 1.2em;
+/* МОБИЛКА */
+
+@media (max-width: 600px) {
+
+.summary-balance {
+font-size: 24px;
 }
 
-.total-value, .total-value-remaining {
-  font-weight: bold;
-  font-size: 1.1em;
-  margin: 5px 0;
+.year-header {
+font-size: 16px;
+}
+
 }
