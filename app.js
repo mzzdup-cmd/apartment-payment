@@ -171,28 +171,20 @@ function renderYears() {
         monthRow.querySelector(".paid-checkbox");
 
       function save() {
-        payments[item.index] = {
-          amount: amountInput.value,
-          paid: checkbox.checked
-        };
+  payments[item.index] = {
+    amount: amountInput.value,
+    paid: checkbox.checked
+  };
 
-        docRef.set({
-          payments: payments
-        });
+  updateSummary();
 
-        updateSummary();
-      }
-      amountInput.addEventListener("input", save);
-      checkbox.addEventListener("change", save);
+  clearTimeout(window.saveTimer);
 
-      content.appendChild(monthRow);
+  window.saveTimer = setTimeout(() => {
+    docRef.set({
+      payments: payments
     });
-
-    yearCard.appendChild(header);
-    yearCard.appendChild(content);
-
-    yearsContainer.appendChild(yearCard);
-  });
+  }, 800);
 }
 
 function updateSummary() {
